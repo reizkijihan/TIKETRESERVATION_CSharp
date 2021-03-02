@@ -54,3 +54,5 @@ C:\Users\ASROCK\source\repos\tiket_reservation\tiket_reservation\obj\Debug\tiket
 C:\Users\ASROCK\source\repos\tiket_reservation\tiket_reservation\obj\Debug\tiket_reservation.csproj.CopyComplete
 C:\Users\ASROCK\source\repos\tiket_reservation\tiket_reservation\obj\Debug\tiket_reservation.dll
 C:\Users\ASROCK\source\repos\tiket_reservation\tiket_reservation\obj\Debug\tiket_reservation.pdb
+C:\Users\ASROCK\source\repos\tiket_reservation\tiket_reservation\bin\EntityFramework.dll
+C:\Users\ASROCK\source\repos\tiket_reservation\tiket_reservation\bin\EntityFramework.xml
