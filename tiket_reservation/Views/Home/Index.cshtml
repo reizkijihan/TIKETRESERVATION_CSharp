@@ -42,10 +42,27 @@ fa-search fa-fw " aria-hidden="true"></i>
                         </form>
                     </div>
                     <li>
-                        <a href="@Url.Action("Login_user", "Home")">
-                            <i class="fa fa-user-circle-o fa-fw fa-lg" aria-hidden="true"></i>
-                            Masuk / Daftar
-                        </a>
+                        @if (Session["user"] != null)
+                        {
+                            <a href="@Url.Action("dashboard", "User")">
+                                <i class="fa fa-user-circle-o fa-fw fa-lg" aria-hidden="true"></i>
+                                Dashboard User
+                            </a>
+                        }
+                        else if (Session["admin"] != null)
+                        {
+                            <a href="@Url.Action("dashboard_admin", "Admin")">
+                                <i class="fa fa-user-circle-o fa-fw fa-lg" aria-hidden="true"></i>
+                                Dashboard Admin
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Login_user", "Home")">
+                                <i class="fa fa-user-circle-o fa-fw fa-lg" aria-hidden="true"></i>
+                                Mauk / Daftar
+                            </a>
+                        }
                     </li>
                 </ul>
             </div>

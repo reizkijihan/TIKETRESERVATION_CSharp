@@ -11,6 +11,38 @@ namespace tiket_reservation.Controllers
     public class HomeController : Controller
     {
         [HttpPost]
+        public ActionResult Login_user(pembeli postPembeli)
+        {
+
+            pembeli pb = db.pembeli.SingleOrDefault(u => u.email_pembeli ==
+            postPembeli.email_pembeli);
+
+            if (pb == null)
+            {
+                ViewBag.htmlError = "has-error";
+                ViewBag.errorMessage = "Username atau password anda salah.";
+                return View();
+            }
+
+            bool comparePassword =
+            PBKDF2Encription.VerifyHashedPassword(pb.password,
+            postPembeli.password);
+            if (postPembeli.email_pembeli == pb.email_pembeli &&
+comparePassword)
+            {
+                Session["user"] = pb.nm_pembeli;
+                Session["email"] = pb.email_pembeli;
+                Session["id"] = pb.id_pembeli;
+                return RedirectToAction("dashboard", "User");
+            }
+            else
+            {
+                ViewBag.htmlError = "has-error";
+                ViewBag.errorMessage = "Username atau password anda salah";
+            }
+            return View();
+        }
+        [HttpPost]
         public ActionResult daftar(Gabungan gabungan)
         {
             if (gabungan.tblPembeli.password != gabungan.password_conf)
@@ -125,6 +157,6 @@ namespace tiket_reservation.Controllers
         {
             return View();
         }
-
+        
     }
 }
