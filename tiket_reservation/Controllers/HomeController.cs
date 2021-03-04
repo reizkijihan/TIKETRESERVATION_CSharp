@@ -6,45 +6,76 @@ using System.Web.Mvc;
 using tiket_reservation.Helper;
 using tiket_reservation.Models;
 
+
 namespace tiket_reservation.Controllers
 {
+
     public class HomeController : Controller
     {
-        [HttpPost]
-        public ActionResult Login_user(pembeli postPembeli)
+        static tiket_reservationEntities db = new tiket_reservationEntities();
+        public ActionResult Index()
         {
+            return View();
+        }
 
-            pembeli pb = db.pembeli.SingleOrDefault(u => u.email_pembeli ==
-            postPembeli.email_pembeli);
-
-            if (pb == null)
+        public void RefreshAllTable()
+        {
+            foreach (var entity in db.ChangeTracker.Entries())
             {
-                ViewBag.htmlError = "has-error";
-                ViewBag.errorMessage = "Username atau password anda salah.";
-                return View();
+                entity.Reload();
             }
-
-            bool comparePassword =
-            PBKDF2Encription.VerifyHashedPassword(pb.password,
-            postPembeli.password);
-            if (postPembeli.email_pembeli == pb.email_pembeli &&
-comparePassword)
+        }
+        public ActionResult Login_user()
+        {
+            if (Session["user"] != null)
             {
-                Session["user"] = pb.nm_pembeli;
-                Session["email"] = pb.email_pembeli;
-                Session["id"] = pb.id_pembeli;
                 return RedirectToAction("dashboard", "User");
             }
-            else
+            return View();
+        }
+        public ActionResult Login_admin()
+        {
+
+            if (Session["admin"] != null)
             {
-                ViewBag.htmlError = "has-error";
-                ViewBag.errorMessage = "Username atau password anda salah";
+                return RedirectToAction("dashboard_admin", "Admin");
             }
             return View();
+        }
+        public ActionResult daftar()
+        {
+            return View();
+        }
+        [HttpGet]
+        public JsonResult HargaBandara(int id)
+        {
+            var dataPajak = db.pajak_bandara.SingleOrDefault(u =>
+
+              u.id_bandara == id);
+            string harga =
+
+            ConvertCurrency.ToRupiah(dataPajak.pajak);
+
+            return Json(new { harga = harga },
+
+            JsonRequestBehavior.AllowGet);
+        }
+        public static IEnumerable<SelectListItem> getBandara()
+        {
+            IEnumerable<SelectListItem>
+                items =
+                db.pajak_bandara.ToList().Select(c => new SelectListItem
+
+                {
+                    Value = c.id_bandara.ToString(),
+                    Text = c.nm_bandara
+                });
+            return items;
         }
         [HttpPost]
         public ActionResult daftar(Gabungan gabungan)
         {
+
             if (gabungan.tblPembeli.password != gabungan.password_conf)
             {
                 ViewBag.passTidakSama = "has-error";
@@ -54,6 +85,7 @@ comparePassword)
             string hashPass =
             PBKDF2Encription.HashPassword
             (gabungan.tblPembeli.password);
+
             // table Pembeli
             var dbPembeli = new pembeli
             {
@@ -86,6 +118,7 @@ comparePassword)
                 pilihan_bank = gabungan.tblDetailTiket.pilihan_bank,
                 bandara_berangkat =
             gabungan.tblDetailTiket.bandara_berangkat,
+
                 bandara_tujuan = gabungan.tblDetailTiket.bandara_tujuan,
                 status = gabungan.tblDetailTiket.status
             };
@@ -104,59 +137,57 @@ comparePassword)
             db.SaveChanges();
             return RedirectToAction("login_user", "Home");
         }
-
-        [HttpGet]
-        public JsonResult HargaBandara(int id)
+        [HttpPost]
+        public ActionResult Login_user(pembeli postPembeli)
         {
-            var dataPajak = db.pajak_bandara.SingleOrDefault(u =>
-            u.id_bandara == id);
-            string harga =
-            ConvertCurrency.ToRupiah(dataPajak.pajak);
-            return Json(new { harga = harga },
-            JsonRequestBehavior.AllowGet);
-        }
-        public static IEnumerable<SelectListItem> getBandara()
-        {
-            IEnumerable<SelectListItem> items =
-            db.pajak_bandara.ToList().Select(c => new SelectListItem
+            pembeli pb = db.pembeli.SingleOrDefault(u => u.email_pembeli ==
+            postPembeli.email_pembeli);
+            if (pb == null)
             {
-                Value = c.id_bandara.ToString(),
-                Text = c.nm_bandara
-            });
-            return items;
-        }
-        public ActionResult Index()
-        {
-            return View();
-        }
-        static tiket_reservationEntities db = new tiket_reservationEntities();
-        public void RefreshAllTable()
-        {
-            foreach (var entity in db.ChangeTracker.Entries())
-            {
-                entity.Reload();
+                ViewBag.htmlError = "has-error";
+                ViewBag.errorMessage = "Username atau password anda salah."; return View();
             }
-        }
-        public ActionResult Login_user()
-        {
-            if (Session["user"] != null)
+            bool comparePassword =
+            PBKDF2Encription.VerifyHashedPassword(pb.password, postPembeli.password); if (postPembeli.email_pembeli == pb.email_pembeli && comparePassword)
             {
+                Session["user"] = pb.nm_pembeli; Session["email"] = pb.email_pembeli; Session["id"] = pb.id_pembeli;
                 return RedirectToAction("dashboard", "User");
             }
-            return View();
-        }
-        public ActionResult Login_admin()
-        {
-            if (Session["admin"] != null)
+            else
             {
-                return RedirectToAction("dashboard_admin", "Admin");
+                ViewBag.htmlError = "has-error";
+                ViewBag.errorMessage = "Username atau password anda salah";
             }
             return View();
         }
-        public ActionResult daftar()
+        [HttpPost]
+        public ActionResult Login_admin(admin postAdmin)
         {
+            RefreshAllTable();
+            admin ad = db.admins.SingleOrDefault(u => u.email_admin == postAdmin.email_admin);
+            if (ad == null)
+            {
+                ViewBag.htmlError = "has-error";
+                ViewBag.errorMessage =
+                "Username atau password anda salah.";
+                return View();
+            }
+            bool comparePassword =
+            PBKDF2Encription.VerifyHashedPassword
+            (ad.pass_admin, postAdmin.pass_admin);
+            if (postAdmin.email_admin == ad.email_admin && comparePassword)
+            {
+                Session["admin"] = ad.nm_admin;
+                Session["email"] = ad.email_admin;
+                return RedirectToAction("dashboard_admin", "Admin");
+            }
+            else
+            {
+                ViewBag.htmlError = "has-error";
+                ViewBag.errorMessage =
+                "Username atau password anda salah";
+            }
             return View();
         }
-        
     }
 }

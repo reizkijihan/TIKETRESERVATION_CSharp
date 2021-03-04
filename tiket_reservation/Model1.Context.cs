@@ -15,6 +15,7 @@ namespace tiket_reservation
 
     public partial class tiket_reservationEntities : DbContext
     {
+        internal object admin;
 
         public tiket_reservationEntities()
             : base("name=tiket_reservationEntities")

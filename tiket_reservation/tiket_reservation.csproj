@@ -129,6 +129,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="detil_pesan_tiket.cs">
@@ -155,6 +156,7 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Gabungan.cs" />
+    <Compile Include="Models\Statistik.cs" />
     <Compile Include="pajak_bandara.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -255,6 +257,12 @@
     <Content Include="Views\User\data_pembeli.cshtml" />
     <Content Include="Views\User\ketentuan.cshtml" />
     <Content Include="Views\User\validasi_tiket.cshtml" />
+    <Content Include="Views\Admin\dashboard_admin.cshtml" />
+    <Content Include="Views\Admin\semua_pembeli.cshtml" />
+    <Content Include="Views\Admin\user_detail.cshtml" />
+    <Content Include="Views\Admin\pembeli_lunas.cshtml" />
+    <Content Include="Views\Admin\pembeli_belum_lunas.cshtml" />
+    <Content Include="Views\Admin\kotak_validasi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
